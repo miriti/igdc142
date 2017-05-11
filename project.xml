@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<meta title="KaijuQuest" package="com.michael-miriti.kaijuquest" version="1.0.0" company="Michael Miriti" />
+	<app main="Main" path="export" file="KaijuQuest" />
+	<source path="source" />
+	<haxelib name="openfl" />
+	<haxelib name="actuate" />
+	<assets path="assets" />
+  <window fps="120" vsync="true" width="920" height="400" resizable="false" background="#e6b17c" />
+</project>
