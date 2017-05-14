@@ -13,6 +13,7 @@ class PuzzleItem extends Sprite {
   public var selected(default, set): Bool;
   public var pos: Point = new Point();
   public var removed: Bool = false;
+  private var puzzle(get, never): Puzzle;
 
   public function new() {
     super();
@@ -23,17 +24,23 @@ class PuzzleItem extends Sprite {
     addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
   }
 
-  function onMouseOver(e: MouseEvent) {
-    if(!selected) {
-      var puzzle: Puzzle = cast parent;
-      if(puzzle.previous != null) {
-        if(Type.getClassName(Type.getClass(this)) == Type.getClassName(Type.getClass(puzzle.previous))) {
-          if(Point.distance(this.pos, puzzle.previous.pos) <= 1) {
-            selected = true;
-            puzzle.previous = this;
+  function get_puzzle(): Puzzle {
+    return cast parent;
+  } 
 
-            var cnt = Math.min(puzzle.getSelected().length, 13) - 1;
-            Assets.getSound('assets/snd/pop-' + cnt + '.ogg').play();
+  function onMouseOver(e: MouseEvent) {
+    if(!puzzle.locked) {
+      if(!selected) {
+        if(puzzle.previous != null) {
+          if(Type.getClassName(Type.getClass(this)) == Type.getClassName(Type.getClass(puzzle.previous))) {
+            if(Point.distance(this.pos, puzzle.previous.pos) <= 1) {
+              selected = true;
+              puzzle.previous = this;
+              puzzle.selectedInOrder.push(this);
+
+              var cnt = Math.min(puzzle.getSelected().length, 13) - 1;
+              Assets.getSound('assets/snd/pop-' + cnt + '.ogg').play();
+            }
           }
         }
       }
@@ -41,12 +48,13 @@ class PuzzleItem extends Sprite {
   }
 
   function onMouseDown(e: MouseEvent) {
-    var puzzle: Puzzle = cast parent;
-
-    if(puzzle.previous == null) {
-      selected = true;
-      puzzle.previous = this;
-            Assets.getSound('assets/snd/pop-0.ogg').play();
+    if(!puzzle.locked) {
+      if(puzzle.previous == null) {
+        selected = true;
+        puzzle.selectedInOrder.push(this);
+        puzzle.previous = this;
+        Assets.getSound('assets/snd/pop-0.ogg').play();
+      }
     }
   }
 
@@ -57,7 +65,6 @@ class PuzzleItem extends Sprite {
 
   function initIcon(num: Int) {
     var data:BitmapData = new BitmapData(16, 16);
-
     data.copyPixels(
         Assets.getBitmapData('assets/puzzle-icons.png'),
         new Rectangle(num * 16, 0, 16, 16),

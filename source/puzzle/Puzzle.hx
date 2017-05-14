@@ -1,9 +1,9 @@
 package puzzle;
 
-import openfl.display.Sprite;
+import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import openfl.Assets;
+import openfl.display.Sprite;
 import openfl.events.MouseEvent;
 
 import motion.Actuate;
@@ -11,6 +11,9 @@ import motion.easing.*;
 
 class Puzzle extends Sprite {
   public var previous: PuzzleItem = null;
+  public var locked: Bool = false;
+  public var selectedInOrder: Array<PuzzleItem> = [];
+
   var items:Array<Array<PuzzleItem>> = [
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
@@ -21,6 +24,7 @@ class Puzzle extends Sprite {
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null]
   ];
+
 
   public function new() {
     super();
@@ -60,67 +64,120 @@ class Puzzle extends Sprite {
     var selected = getSelected();
 
     if(selected.length >= 3) {
-      for(item in selected) {
-        if(item != null) {
-          if(item.selected) {
-            removeChild(item);
-            items[Std.int(item.pos.x)][Std.int(item.pos.y)] = null;
-          }
-        }
-      }
+      var fill = function() {
+        for(col in 0...8) {
+          var row = 7;
+          var gap = 0;
 
-      for(col in 0...8) {
-        var row = 7;
-        var gap = 0;
-
-        while(row >= 0) {
-          if(items[col][row] == null) {
-            gap++;
-            row--;
-          } else {
-            if(gap > 0) {
-              var item = items[col][row];
-              var ny = row + gap;
-
-              item.pos.y = ny;
-
-              Actuate.tween(item, 0.5 * gap, {y: ny*16}).ease(Bounce.easeOut);
-
-              items[col][row] = null;
-              items[col][ny] = item;
-
-              row = 7;
-              gap = 0;
-
-              continue;
-            } else {
+          while(row >= 0) {
+            if(items[col][row] == null) {
+              gap++;
               row--;
+            } else {
+              if(gap > 0) {
+                var item = items[col][row];
+                var ny = row + gap;
+
+                item.pos.y = ny;
+
+                Actuate.tween(item, 0.5 * gap, {y: ny*16}).ease(Bounce.easeOut);
+
+                items[col][row] = null;
+                items[col][ny] = item;
+
+                row = 7;
+                gap = 0;
+
+                continue;
+              } else {
+                row--;
+              }
+            }
+          }
+
+
+          var new_count = 0;
+          for(i in 0...8) {
+            if(items[col][i] == null) {
+              new_count++;
+            }
+          }
+
+          for(i in 0...8) {
+            if(items[col][i] == null) {
+              var newItem = PuzzleItem.random();
+
+              newItem.x = col * 16;
+              newItem.y = -16 * new_count + i * 16;
+              newItem.pos.x = col;
+              newItem.pos.y = i;
+
+              Actuate.tween(newItem, 1, { y: i * 16 }).ease(Bounce.easeOut).delay(0.5);
+
+              addChild(newItem);
+
+              items[col][i] = newItem;
             }
           }
         }
 
+      };
 
-        var new_count = 0;
-        for(i in 0...8) {
-          if(items[col][i] == null) {
-            new_count++;
-          }
-        }
+      locked = true;
 
-        for(i in 0...8) {
-          if(items[col][i] == null) {
-            var newItem = PuzzleItem.random();
+      var itemNumber = 0;
+      var used = 0;
+      var total = selectedInOrder.length;
 
-            newItem.x = col * 16;
-            newItem.y = -16*new_count + i*16;
-            newItem.pos.x = col;
-            newItem.pos.y = i;
+      for(item in selectedInOrder) {
+        if(item != null) {
+          if(item.selected) {
+            Actuate.timer((itemNumber++) / 15).onComplete(function() {
 
-            Actuate.tween(newItem, 1, { y: i * 16 }).ease(Bounce.easeOut).delay(0.5);
+              var itemGlobalPos = item.getBounds(Game.instance);
+              var gojiraGlobalPos = Game.instance.gojira.getBounds(Game.instance);
 
-            addChild(newItem);
+              removeChild(item);
+              item.x = itemGlobalPos.x;
+              item.y = itemGlobalPos.y;
 
-            items[col][i] = newItem;
+              Game.instance.addChild(item);
+
+              Actuate.tween(item, 0.75, { 
+                x: gojiraGlobalPos.x + Game.instance.gojira.width / 2 + (-10 + Math.random() * 20),
+                y: gojiraGlobalPos.y + Game.instance.gojira.height / 3 + (-10 + Math.random() * 20)
+              }).ease(Sine.easeOut).onComplete(function() {
+                Game.instance.removeChild(item);
+                Assets.getSound('assets/snd/pop-use.ogg').play();
+                if(++used == total) {
+
+                  var item:PuzzleItem = selectedInOrder[0];
+
+                  var action: String = '';
+
+                  if(Std.is(item, Fire)) {
+                    action = 'fire';
+                  }
+
+                  if(Std.is(item, Health)) {
+                    action = 'health';
+                  }
+
+                  if(Std.is(item, Shield)) {
+                    action = 'shield';
+                  }
+
+                  Game.instance.gojira.action(action, total, function() {
+                    fill();
+                    selectedInOrder = [];
+                    locked = false;
+                  });
+                }
+              });
+
+              Assets.getSound('assets/snd/pop-solved.ogg').play();
+            });
+            items[Std.int(item.pos.x)][Std.int(item.pos.y)] = null;
           }
         }
       }

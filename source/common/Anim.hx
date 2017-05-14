@@ -26,16 +26,15 @@ class Anim extends Bitmap {
   public var fps: Int = 25;
 
   private var frames:Array<AnimationFrame> = [];
-  private var lastTime: Float;
+  private var lastTime: Float = 0;
   private var frameTime: Float = 0;
 
   private var tag: AnimationTag = null;
-  private var tags:Map<String, AnimationTag> = new Map<String, AnimationTag>();
+  private var tags: Map<String, AnimationTag> = new Map<String, AnimationTag>();
 
   public function new () {
     super();
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
-    addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
   }
 
   public function simple(bitmapData: BitmapData, frameWidth: Int, frameHeight: Int, fps: Int = 25) {
@@ -53,22 +52,22 @@ class Anim extends Bitmap {
     currentFrame = 0;
   }
 
-  function onAddedToStage(e: Event) {
-    lastTime = Date.now().getTime();
-  }
-
   function onEnterFrame(e: Event) {
-    var currentTime = Date.now().getTime(); 
-    var delta = currentTime - lastTime;
+    if(lastTime != 0) {
+      var currentTime = Date.now().getTime(); 
+      var delta = currentTime - lastTime;
 
-    frameTime += delta;
+      frameTime += delta;
 
-    if(frameTime >= frames[currentFrame].duration) {
-      currentFrame++;
-      frameTime = frameTime - frames[currentFrame].duration;
+      if(frameTime >= frames[currentFrame].duration) {
+        currentFrame++;
+        frameTime = frameTime - frames[currentFrame].duration;
+      }
+
+      lastTime = currentTime;
+    } else {
+      lastTime = Date.now().getTime();
     }
-
-    lastTime = currentTime;
   }
 
   function set_currentFrame(frame: Int): Int {
@@ -90,7 +89,7 @@ class Anim extends Bitmap {
       var bmp = new BitmapData(
           Std.parseInt(jframe.frame.w), 
           Std.parseInt(jframe.frame.h)
-          );
+      );
 
       bmp.copyPixels(bitmapData, new Rectangle(
             Std.parseInt(jframe.frame.x), 
@@ -108,11 +107,11 @@ class Anim extends Bitmap {
     tags.set('[full]', {
       name: '[full]',
       from: 0,
-      to: frames.length-1,
+      to: frames.length - 1,
       direction: 'forward'
     });
 
-    var frameTags:Array<Dynamic> = data.meta.frameTags;
+    var frameTags: Array<Dynamic> = data.meta.frameTags;
 
     for(ftag in frameTags) {
       tags.set(ftag.name, ftag);

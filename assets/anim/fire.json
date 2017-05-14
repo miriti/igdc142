@@ -1,0 +1,40 @@
+{ "frames": [
+   {
+    "filename": "fire 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 27, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 27, "h": 18 },
+    "sourceSize": { "w": 27, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "fire 1.ase",
+    "frame": { "x": 27, "y": 0, "w": 27, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 27, "h": 18 },
+    "sourceSize": { "w": 27, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "fire 2.ase",
+    "frame": { "x": 54, "y": 0, "w": 27, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 27, "h": 18 },
+    "sourceSize": { "w": 27, "h": 18 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.1.12-dev",
+  "image": "/home/michael/1GAM/07_Kaiju_Quest/assets/anim/fire.png",
+  "format": "RGBA8888",
+  "size": { "w": 81, "h": 18 },
+  "scale": "1",
+  "frameTags": [
+  ]
+ }
+}
