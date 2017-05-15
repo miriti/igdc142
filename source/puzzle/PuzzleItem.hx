@@ -58,8 +58,11 @@ class PuzzleItem extends Sprite {
     }
   }
 
+  /**
+    WARNING: Govnocode
+   **/
   public static function random():PuzzleItem {
-    var v = [new Fire(), new Health(), new Shield()];
+    var v = [new Fire(), new Health(), new Shield(), new Claw()];
     return v[Math.floor(Math.random() * v.length)];
   }
 

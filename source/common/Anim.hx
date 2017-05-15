@@ -59,7 +59,7 @@ class Anim extends Bitmap {
 
       frameTime += delta;
 
-      if(frameTime >= frames[currentFrame].duration) {
+      while(frameTime >= frames[currentFrame].duration) {
         currentFrame++;
         frameTime = frameTime - frames[currentFrame].duration;
       }

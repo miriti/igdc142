@@ -8,7 +8,7 @@ import motion.easing.*;
 import common.GameSprite;
 import common.Anim;
 
-class Gojira extends GameSprite {
+class Gojira extends Fighter {
   var anim: Anim;
   var fired = 0;
   var times = 0;
@@ -32,9 +32,11 @@ class Gojira extends GameSprite {
       fired = 0;
       this.times = times;
 
-      genFire(callback);
+      genFire(function() {
+        Game.instance.enemy.respond(callback);
+      });
     } else {
-      callback();
+      Game.instance.enemy.respond(callback);
     }
   }
 
@@ -50,6 +52,7 @@ class Gojira extends GameSprite {
     Actuate.tween(fire, 0.5, {
       x: fire.x + 100, 
     }).ease(Linear.easeNone).onComplete(function() {
+      Game.instance.enemy.hit();
       parent.removeChild(fire);
     });
 

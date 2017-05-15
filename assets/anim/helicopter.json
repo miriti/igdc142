@@ -1,0 +1,69 @@
+{ "frames": [
+   {
+    "filename": "helicopter 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   },
+   {
+    "filename": "helicopter 1.ase",
+    "frame": { "x": 114, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   },
+   {
+    "filename": "helicopter 2.ase",
+    "frame": { "x": 228, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   },
+   {
+    "filename": "helicopter 3.ase",
+    "frame": { "x": 342, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   },
+   {
+    "filename": "helicopter 4.ase",
+    "frame": { "x": 456, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   },
+   {
+    "filename": "helicopter 5.ase",
+    "frame": { "x": 570, "y": 0, "w": 114, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 34 },
+    "sourceSize": { "w": 114, "h": 34 },
+    "duration": 50
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.1.12-dev",
+  "image": "/home/michael/1GAM/07_Kaiju_Quest/assets/anim/helicopter.png",
+  "format": "RGBA8888",
+  "size": { "w": 684, "h": 34 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "fly", "from": 0, "to": 5, "direction": "forward" },
+   { "name": "Tag", "from": 0, "to": 5, "direction": "forward" }
+  ]
+ }
+}
