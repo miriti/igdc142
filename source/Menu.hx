@@ -24,9 +24,12 @@ class Menu extends State {
     items.push(new MenuItem("new-game", function() {
       Main.instance.setState(new Game());
     }));
+
+#if !html5
     items.push(new MenuItem("quit", function() {
       System.exit(0);
     }));
+#end
 
     arrangeItems();
   }

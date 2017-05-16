@@ -15,7 +15,7 @@ class GameBg extends Sprite {
   var sky4: Scrolling;
   var cityStreet: Scrolling;
 
-  public var scrollX(default, set):Float;
+  public var scrollX(default, set):Float = 0;
 
   public function new() {
     super();

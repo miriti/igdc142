@@ -61,9 +61,7 @@ class Puzzle extends Sprite {
   }
 
   function solved() {
-    var selected = getSelected();
-
-    if(selected.length >= 3) {
+    if(selectedInOrder.length >= 3) {
       var fill = function() {
         for(col in 0...8) {
           var row = 7;
@@ -78,15 +76,19 @@ class Puzzle extends Sprite {
                 var item = items[col][row];
                 var ny = row + gap;
 
-                item.pos.y = ny;
+                if(item != null) {
+                  item.pos.y = ny;
 
-                Actuate.tween(item, 0.5 * gap, {y: ny*16}).ease(Bounce.easeOut);
+                  Actuate.tween(item, 0.1 * gap, {y: ny*16}).ease(Sine.easeIn);
 
-                items[col][row] = null;
-                items[col][ny] = item;
+                  items[col][row] = null;
+                  items[col][ny] = item;
 
-                row = 7;
-                gap = 0;
+                  row = 7;
+                  gap = 0;
+                } else {
+                  trace('NULL!!!!');
+                }
 
                 continue;
               } else {
@@ -94,7 +96,6 @@ class Puzzle extends Sprite {
               }
             }
           }
-
 
           var new_count = 0;
           for(i in 0...8) {
@@ -106,21 +107,18 @@ class Puzzle extends Sprite {
           for(i in 0...8) {
             if(items[col][i] == null) {
               var newItem = PuzzleItem.random();
-
               newItem.x = col * 16;
               newItem.y = -16 * new_count + i * 16;
               newItem.pos.x = col;
               newItem.pos.y = i;
 
-              Actuate.tween(newItem, 1, { y: i * 16 }).ease(Bounce.easeOut).delay(0.5);
+              Actuate.tween(newItem, 0.5, { y: i * 16 }).ease(Sine.easeIn).delay(0.5);
 
               addChild(newItem);
-
               items[col][i] = newItem;
             }
           }
         }
-
       };
 
       locked = true;
@@ -128,57 +126,55 @@ class Puzzle extends Sprite {
       var itemNumber = 0;
       var used = 0;
       var total = selectedInOrder.length;
+      var selectedType = selectedInOrder[0];
 
       for(item in selectedInOrder) {
-        if(item != null) {
-          if(item.selected) {
-            Actuate.timer((itemNumber++) / 15).onComplete(function() {
+        if(item.selected) {
+          Actuate.timer((itemNumber++) / 15).onComplete(function() {
+            var itemGlobalPos = item.getBounds(Game.instance);
+            var gojiraGlobalPos = Game.instance.gojira.getBounds(Game.instance);
 
-              var itemGlobalPos = item.getBounds(Game.instance);
-              var gojiraGlobalPos = Game.instance.gojira.getBounds(Game.instance);
+            removeChild(item);
+            item.x = itemGlobalPos.x;
+            item.y = itemGlobalPos.y;
 
-              removeChild(item);
-              item.x = itemGlobalPos.x;
-              item.y = itemGlobalPos.y;
+            Game.instance.addChild(item);
 
-              Game.instance.addChild(item);
+            Actuate.tween(item, 0.75, { 
+              x: gojiraGlobalPos.x + Game.instance.gojira.width / 2 + (-10 + Math.random() * 20),
+              y: gojiraGlobalPos.y + Game.instance.gojira.height / 3 + (-10 + Math.random() * 20)
+            }).ease(Sine.easeOut).onUpdate(function() {
+            }).onComplete(function() {
+              items[Std.int(item.pos.x)][Std.int(item.pos.y)] = null;
+              Game.instance.removeChild(item);
+              Game.instance.gojira.pickup(item);
+              Assets.getSound('assets/snd/pop-use.ogg').play();
+              if(++used == total) {
+                var item:PuzzleItem = selectedType;
+                var action: String = '';
 
-              Actuate.tween(item, 0.75, { 
-                x: gojiraGlobalPos.x + Game.instance.gojira.width / 2 + (-10 + Math.random() * 20),
-                y: gojiraGlobalPos.y + Game.instance.gojira.height / 3 + (-10 + Math.random() * 20)
-              }).ease(Sine.easeOut).onComplete(function() {
-                Game.instance.removeChild(item);
-                Assets.getSound('assets/snd/pop-use.ogg').play();
-                if(++used == total) {
-
-                  var item:PuzzleItem = selectedInOrder[0];
-
-                  var action: String = '';
-
-                  if(Std.is(item, Fire)) {
-                    action = 'fire';
-                  }
-
-                  if(Std.is(item, Health)) {
-                    action = 'health';
-                  }
-
-                  if(Std.is(item, Shield)) {
-                    action = 'shield';
-                  }
-
-                  Game.instance.gojira.action(action, total, function() {
-                    fill();
-                    selectedInOrder = [];
-                    locked = false;
-                  });
+                if(Std.is(item, Fire)) {
+                  action = 'fire';
                 }
-              });
 
-              Assets.getSound('assets/snd/pop-solved.ogg').play();
+                if(Std.is(item, Health)) {
+                  action = 'health';
+                }
+
+                if(Std.is(item, Shield)) {
+                  action = 'shield';
+                }
+
+                Game.instance.gojira.action(action, total, function() {
+                  fill();
+                  locked = false;
+                });
+              }
             });
-            items[Std.int(item.pos.x)][Std.int(item.pos.y)] = null;
-          }
+
+            Assets.getSound('assets/snd/pop-solved.ogg').play();
+          });
+
         }
       }
     }
@@ -194,9 +190,10 @@ class Puzzle extends Sprite {
     for(col in items) {
       for(item in col) {
         if(item != null) {
-        item.selected = false;
+          item.selected = false;
         }
       }
     }
+    selectedInOrder = [];
   }
 }

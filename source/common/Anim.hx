@@ -7,6 +7,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
+import openfl.Lib;
 
 typedef AnimationFrame = {
   bitmapData: BitmapData,
@@ -54,7 +55,7 @@ class Anim extends Bitmap {
 
   function onEnterFrame(e: Event) {
     if(lastTime != 0) {
-      var currentTime = Date.now().getTime(); 
+      var currentTime = Lib.getTimer(); 
       var delta = currentTime - lastTime;
 
       frameTime += delta;
@@ -66,7 +67,7 @@ class Anim extends Bitmap {
 
       lastTime = currentTime;
     } else {
-      lastTime = Date.now().getTime();
+      lastTime = Lib.getTimer();
     }
   }
 
@@ -87,15 +88,15 @@ class Anim extends Bitmap {
 
     for(jframe in jframes) {
       var bmp = new BitmapData(
-          Std.parseInt(jframe.frame.w), 
-          Std.parseInt(jframe.frame.h)
-      );
+          jframe.frame.w, 
+          jframe.frame.h
+          );
 
       bmp.copyPixels(bitmapData, new Rectangle(
-            Std.parseInt(jframe.frame.x), 
-            Std.parseInt(jframe.frame.y), 
-            Std.parseInt(jframe.frame.w), 
-            Std.parseInt(jframe.frame.h)
+            jframe.frame.x, 
+            jframe.frame.y, 
+            jframe.frame.w, 
+            jframe.frame.h
             ), new Point(0, 0));
 
       frames.push({

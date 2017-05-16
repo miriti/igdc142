@@ -62,8 +62,7 @@
   "size": { "w": 684, "h": 34 },
   "scale": "1",
   "frameTags": [
-   { "name": "fly", "from": 0, "to": 5, "direction": "forward" },
-   { "name": "Tag", "from": 0, "to": 5, "direction": "forward" }
+   { "name": "fly", "from": 0, "to": 5, "direction": "forward" }
   ]
  }
 }

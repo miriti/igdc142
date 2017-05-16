@@ -18,7 +18,7 @@ class State extends GameSprite {
   public static var target_width = 1920;
   public static var target_height = 1080;
 
-  var lastTime:Float = -1;
+  var lastTime:Int = -1;
 
   public function new() {
     super();
@@ -52,10 +52,7 @@ class State extends GameSprite {
   }
 
   function onEnterFrame(e:Event) {
-#if neko
-    update(1/Lib.current.stage.frameRate); // TODO: Real fps from project.xml
-#else
-    var currentTime:Float = Date.now().getTime();
+    var currentTime:Int = Lib.getTimer();
 
     if(lastTime != -1) {
       var delta = currentTime - lastTime;
@@ -63,7 +60,6 @@ class State extends GameSprite {
     }
 
     lastTime = currentTime;
-#end
   }
 
   function resize() {

@@ -8,6 +8,8 @@ import enemies.Enemy;
 class Game extends common.State {
   public static var instance: Game = null;
 
+  public var scrolling: Bool = false;
+
   public var gojira: Gojira;
   public var enemy: Enemy;
 
@@ -41,5 +43,18 @@ class Game extends common.State {
     if(keycode == openfl.ui.Keyboard.ESCAPE) {
       Main.instance.setState(new Menu());
     }
+  }
+
+  override function update(delta: Float) {
+    super.update(delta);
+
+    if(scrolling) {
+      bg.scrollX -= 100 * delta;
+    }
+  }
+
+  public function nextEnemy() {
+    enemy.parent.removeChild(enemy);
+    scrolling = true;
   }
 }
